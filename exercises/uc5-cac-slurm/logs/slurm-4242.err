@@ -1,0 +1,12 @@
+Lmod has detected the following error: The following module(s) are unknown: "python/999.0.0"
+
+Please check the spelling or version number. Also try "module spider ..."
+It is also possible your cache is out of date; try:
+  $ module --ignore_cache load "python/999.0.0"
+
+While processing the following module(s):
+    Module fullname  Module Filename
+    ---------------  ---------------
+    python/999.0.0   (unknown)
+
+python: can't open file '/home/trainee/scripts/analyze_job.py': [Errno 2] No such file or directory

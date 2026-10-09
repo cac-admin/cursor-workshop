@@ -1,0 +1,4 @@
+Host: cac-login-example
+Looking for data at: scripts/analyze_job.py
+DATA_MISSING: set WORKSHOP_DATA or place measurements.csv beside the job.
+DONE

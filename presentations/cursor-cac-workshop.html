@@ -1,0 +1,2224 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cursor for Research Computing - Centre for Advanced Computing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,500&display=swap" rel="stylesheet" />
+  <style>
+    /* ===========================================
+       VIEWPORT FITTING: MANDATORY BASE STYLES
+       =========================================== */
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-height: 100%;
+      overflow: hidden;
+      padding: var(--slide-padding);
+    }
+
+    :root {
+      --queens-blue: #002452;
+      --queens-gold: #fabd0f;
+      --queens-red: #b90e31;
+      --ink: #0c1a2e;
+      --paper: #f7f5f0;
+      --muted: #5a6a7e;
+      --line: rgba(0, 36, 82, 0.12);
+      --white: #ffffff;
+      --blue-soft: #e8eef6;
+      --gold-soft: rgba(250, 189, 15, 0.18);
+
+      --title-size: clamp(1.5rem, 5vw, 4rem);
+      --h2-size: clamp(1.25rem, 3.5vw, 2.5rem);
+      --h3-size: clamp(1rem, 2.5vw, 1.75rem);
+      --body-size: clamp(0.75rem, 1.5vw, 1.125rem);
+      --small-size: clamp(0.65rem, 1vw, 0.875rem);
+
+      --slide-padding: clamp(1rem, 4vw, 4rem);
+      --content-gap: clamp(0.5rem, 2vw, 2rem);
+      --element-gap: clamp(0.25rem, 1vw, 1rem);
+
+      --font-display: "Source Serif 4", Georgia, serif;
+      --font-body: "DM Sans", system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .slide.content {
+      background:
+        radial-gradient(ellipse 80% 50% at 100% 0%, var(--gold-soft), transparent 55%),
+        radial-gradient(ellipse 60% 40% at 0% 100%, rgba(0, 36, 82, 0.06), transparent 50%),
+        var(--paper);
+    }
+
+    .slide.dark {
+      background:
+        radial-gradient(ellipse 70% 50% at 85% 15%, rgba(250, 189, 15, 0.12), transparent 50%),
+        radial-gradient(ellipse 50% 40% at 10% 90%, rgba(185, 14, 49, 0.15), transparent 45%),
+        linear-gradient(160deg, #001a3d 0%, var(--queens-blue) 55%, #001433 100%);
+      color: var(--white);
+    }
+
+    .slide.section {
+      background:
+        linear-gradient(135deg, var(--queens-blue) 0%, #003366 60%, #001a3d 100%);
+      color: var(--white);
+    }
+
+    .slide.hero {
+      color: var(--white);
+      background: #001433;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .hero-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .hero-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        105deg,
+        rgba(0, 36, 82, 0.78) 0%,
+        rgba(0, 36, 82, 0.55) 45%,
+        rgba(0, 20, 51, 0.35) 100%
+      );
+    }
+
+    .slide.hero .slide-content,
+    .slide.hero .slide-footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    .slide-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: clamp(0.6rem, 1.5vh, 1rem) var(--slide-padding) 0;
+      font-size: var(--small-size);
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .slide.dark .slide-header,
+    .slide.section .slide-header,
+    .slide.hero .slide-header {
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .slide-header .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .slide-header .brand-mark::before {
+      content: "";
+      width: 0.55rem;
+      height: 0.55rem;
+      background: var(--queens-gold);
+      border-radius: 1px;
+      flex-shrink: 0;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 var(--slide-padding) clamp(0.5rem, 1.2vh, 0.9rem);
+      font-size: var(--small-size);
+      color: var(--muted);
+      flex-shrink: 0;
+      gap: 1rem;
+    }
+
+    .slide.dark .slide-footer,
+    .slide.section .slide-footer,
+    .slide.hero .slide-footer {
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .slide-footer .site { letter-spacing: 0.03em; }
+
+    .kicker {
+      font-family: var(--font-body);
+      font-size: var(--small-size);
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--queens-red);
+      margin: 0 0 var(--element-gap);
+    }
+
+    .slide.dark .kicker,
+    .slide.section .kicker,
+    .slide.hero .kicker {
+      color: var(--queens-gold);
+    }
+
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      line-height: 1.15;
+      margin: 0 0 var(--element-gap);
+    }
+
+    h1 { font-size: var(--title-size); max-width: 18ch; }
+    h2 { font-size: var(--h2-size); max-width: 28ch; }
+    h3 { font-size: var(--h3-size); }
+
+    .lede {
+      font-size: clamp(0.95rem, 1.8vw, 1.25rem);
+      line-height: 1.45;
+      max-width: 52ch;
+      margin: 0 0 var(--content-gap);
+      color: var(--muted);
+    }
+
+    .slide.dark .lede,
+    .slide.section .lede,
+    .slide.hero .lede {
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    p {
+      font-size: var(--body-size);
+      line-height: 1.5;
+      margin: 0 0 var(--element-gap);
+      max-width: 60ch;
+    }
+
+    .prose-block {
+      max-width: min(90vw, 720px);
+    }
+
+    .prose-block p + p { margin-top: 0.75em; }
+
+    ul.bullet-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(0.4rem, 1vh, 1rem);
+      max-width: min(90vw, 720px);
+    }
+
+    ul.bullet-list li {
+      font-size: var(--body-size);
+      line-height: 1.4;
+      padding-left: 1.35em;
+      position: relative;
+    }
+
+    ul.bullet-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.45em;
+      width: 0.45em;
+      height: 0.45em;
+      background: var(--queens-gold);
+      border-radius: 1px;
+    }
+
+    .path {
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      font-size: 0.92em;
+      background: var(--blue-soft);
+      color: var(--queens-blue);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    .slide.dark .path,
+    .slide.section .path {
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--queens-gold);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: clamp(1rem, 3vw, 2.5rem);
+      align-items: center;
+      max-width: min(92vw, 1100px);
+      width: 100%;
+    }
+
+    .img-frame {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-height: min(52vh, 420px);
+    }
+
+    .img-frame img {
+      max-width: 100%;
+      max-height: min(50vh, 400px);
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 12px 40px rgba(0, 36, 82, 0.18);
+    }
+
+    .slide.dark .img-frame img,
+    .slide.section .img-frame img {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(0.6rem, 1.5vw, 1.25rem);
+      max-width: min(92vw, 960px);
+      width: 100%;
+    }
+
+    .tile {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.65);
+      padding: clamp(0.75rem, 1.5vw, 1.15rem);
+      border-radius: 4px;
+    }
+
+    .slide.dark .tile {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.14);
+    }
+
+    .tile h3 {
+      font-family: var(--font-body);
+      font-size: clamp(0.9rem, 1.4vw, 1.1rem);
+      font-weight: 700;
+      margin-bottom: 0.35em;
+      color: var(--queens-blue);
+    }
+
+    .slide.dark .tile h3 { color: var(--queens-gold); }
+
+    .tile p {
+      margin: 0;
+      font-size: clamp(0.7rem, 1.2vw, 0.95rem);
+      max-width: none;
+      color: var(--muted);
+    }
+
+    .slide.dark .tile p { color: rgba(255, 255, 255, 0.78); }
+
+    .agenda-table {
+      width: 100%;
+      max-width: min(92vw, 900px);
+      border-collapse: collapse;
+      font-size: clamp(0.7rem, 1.25vw, 1rem);
+    }
+
+    .agenda-table th,
+    .agenda-table td {
+      text-align: left;
+      padding: clamp(0.3rem, 0.8vh, 0.55rem) 0.5rem;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    .agenda-table th {
+      font-size: var(--small-size);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .agenda-table .time {
+      font-variant-numeric: tabular-nums;
+      color: var(--queens-blue);
+      font-weight: 600;
+      white-space: nowrap;
+      width: 7.5rem;
+    }
+
+    .callout {
+      border-left: 3px solid var(--queens-gold);
+      padding: 0.35rem 0 0.35rem 1rem;
+      margin-top: var(--element-gap);
+      max-width: 56ch;
+      font-size: var(--body-size);
+      color: var(--muted);
+    }
+
+    .slide.dark .callout { color: rgba(255, 255, 255, 0.8); }
+
+    .uc-badge {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: var(--small-size);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--queens-blue);
+      background: var(--queens-gold);
+      padding: 0.25em 0.65em;
+      border-radius: 2px;
+      margin-bottom: var(--element-gap);
+    }
+
+    .hero-brand {
+      font-family: var(--font-display);
+      font-size: clamp(1.1rem, 2.2vw, 1.6rem);
+      font-weight: 600;
+      margin: 0 0 clamp(0.75rem, 2vh, 1.5rem);
+      max-width: none;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-brand span {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 0.55em;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--queens-gold);
+      margin-bottom: 0.4em;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.5rem;
+      margin-top: var(--content-gap);
+      font-size: var(--small-size);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--queens-gold);
+      z-index: 100;
+      transition: width 0.2s ease;
+    }
+
+    .keyboard-hint {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      z-index: 90;
+      font-size: 0.7rem;
+      color: var(--muted);
+      background: rgba(247, 245, 240, 0.9);
+      border: 1px solid var(--line);
+      padding: 0.35rem 0.6rem;
+      border-radius: 3px;
+      pointer-events: none;
+      opacity: 0.85;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .slide.in-view .reveal,
+    .slide.in-view .reveal-stagger > * {
+      opacity: 1;
+      transform: none;
+    }
+
+    .reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .slide.in-view .reveal-stagger > *:nth-child(1) { transition-delay: 0.05s; }
+    .slide.in-view .reveal-stagger > *:nth-child(2) { transition-delay: 0.12s; }
+    .slide.in-view .reveal-stagger > *:nth-child(3) { transition-delay: 0.19s; }
+    .slide.in-view .reveal-stagger > *:nth-child(4) { transition-delay: 0.26s; }
+    .slide.in-view .reveal-stagger > *:nth-child(5) { transition-delay: 0.33s; }
+    .slide.in-view .reveal-stagger > *:nth-child(6) { transition-delay: 0.4s; }
+
+    .gold-rule {
+      width: 3rem;
+      height: 3px;
+      background: var(--queens-gold);
+      margin: 0 0 var(--content-gap);
+      border: none;
+    }
+
+    .prompt-box {
+      background: var(--blue-soft);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--queens-blue);
+      padding: clamp(0.65rem, 1.4vw, 1rem);
+      border-radius: 4px;
+      max-width: min(90vw, 760px);
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      font-size: clamp(0.65rem, 1.15vw, 0.9rem);
+      line-height: 1.45;
+      white-space: pre-wrap;
+      color: var(--ink);
+      margin: 0 0 var(--element-gap);
+    }
+
+    .slide.dark .prompt-box {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.18);
+      border-left-color: var(--queens-gold);
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .prompt-label {
+      font-family: var(--font-body);
+      font-size: var(--small-size);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--queens-blue);
+      margin: 0 0 0.4rem;
+    }
+
+    .slide.dark .prompt-label,
+    .slide.section .prompt-label { color: var(--queens-gold); }
+
+    .done-when {
+      border: 1px solid var(--line);
+      background: rgba(250, 189, 15, 0.12);
+      padding: clamp(0.65rem, 1.4vw, 1rem);
+      border-radius: 4px;
+      max-width: min(90vw, 720px);
+    }
+
+    .done-when h3 {
+      font-family: var(--font-body);
+      font-size: clamp(0.85rem, 1.3vw, 1.05rem);
+      font-weight: 700;
+      color: var(--queens-blue);
+      margin-bottom: 0.4em;
+    }
+
+    .author-line {
+      font-size: var(--small-size);
+      line-height: 1.45;
+      max-width: 48ch;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .tick-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(0.35rem, 1vh, 0.75rem);
+      max-width: min(90vw, 720px);
+    }
+
+    .tick-list li {
+      font-size: var(--body-size);
+      line-height: 1.4;
+      padding: 0.45rem 0.75rem;
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+    }
+
+    .slide.dark .tick-list li {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.14);
+    }
+
+    .footer-author {
+      max-width: 42ch;
+      text-align: right;
+      line-height: 1.35;
+    }
+
+    @media (max-width: 800px) {
+      .two-col, .grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .img-frame { max-height: min(28vh, 220px); }
+      .img-frame img { max-height: min(26vh, 200px); }
+      h1 { max-width: none; }
+    }
+
+    @media (max-height: 700px) {
+      :root {
+        --slide-padding: clamp(0.75rem, 3vw, 2rem);
+        --content-gap: clamp(0.4rem, 1.5vw, 1rem);
+        --title-size: clamp(1.25rem, 4.5vw, 2.5rem);
+        --h2-size: clamp(1rem, 3vw, 1.75rem);
+      }
+    }
+
+    @media (max-height: 600px) {
+      :root {
+        --slide-padding: clamp(0.5rem, 2.5vw, 1.5rem);
+        --content-gap: clamp(0.3rem, 1vw, 0.75rem);
+        --title-size: clamp(1.1rem, 4vw, 2rem);
+        --body-size: clamp(0.7rem, 1.2vw, 0.95rem);
+      }
+      .keyboard-hint { display: none; }
+      .img-frame { max-height: min(22vh, 160px); }
+      .img-frame img { max-height: min(20vh, 140px); }
+    }
+
+    @media (max-height: 500px) {
+      :root {
+        --slide-padding: clamp(0.4rem, 2vw, 1rem);
+        --title-size: clamp(1rem, 3.5vw, 1.5rem);
+        --h2-size: clamp(0.9rem, 2.5vw, 1.25rem);
+        --body-size: clamp(0.65rem, 1vw, 0.85rem);
+      }
+    }
+
+    @media (max-width: 600px) {
+      :root {
+        --title-size: clamp(1.25rem, 7vw, 2.5rem);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.2s !important;
+      }
+      html { scroll-behavior: auto; }
+      .reveal, .reveal-stagger > * {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-bar" id="progress" aria-hidden="true"></div>
+  <div class="keyboard-hint" aria-hidden="true">Left/Right or Space - Home/End</div>
+
+  <main id="deck" aria-label="Workshop presentation">
+
+    <section class="slide hero" data-slide>
+      <div class="hero-bg" aria-hidden="true">
+        <img src="assets/hero-cac-cursor.jpg" alt="" />
+      </div>
+      <div class="slide-content">
+        <p class="hero-brand reveal">
+          <span>Queen's University</span>
+          Centre for Advanced Computing
+        </p>
+        <h1 class="reveal">Cursor for Research Computing</h1>
+        <p class="lede reveal">From Laptop to CAC HPC. Three hours of hands-on practice so you can use an AI coding agent without abandoning scientific judgment, file hygiene, or your SLURM checklist.</p>
+        <p class="author-line reveal">Shadi Khalifa, PhD &lt;khalifa.s@queensu.ca&gt;<br />Centre for Advanced Computing, Queen's University</p>
+        <div class="meta-row reveal">
+          <span>3 hours - hands-on</span>
+          <span>Laptop + optional CAC SSH</span>
+          <span>Dry-runs count as success</span>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="footer-author">Shadi Khalifa, PhD - cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Cursor the company</p>
+        <h2 class="reveal">Anysphere builds Cursor</h2>
+        <div class="prose-block reveal">
+          <p>Cursor is the product of Anysphere, a company focused on AI-native software development tools rather than a generic chatbot bolted onto a text box. The company ships an editor that treats large language models as first-class collaborators inside your project files, terminals, and (when you allow it) external tools.</p>
+          <p>You should care about the vendor story only insofar as it explains the product shape: Cursor is not a separate chat website you paste code into. It is a fork of a familiar VS Code-style IDE with deep hooks for agents, rules, skills, and Model Context Protocol servers.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Cursor the tool</p>
+        <h2 class="reveal">An IDE with an agent, not a chat window with an afterthought editor</h2>
+        <div class="prose-block reveal">
+          <p>When you open Cursor you get the editor habits you already know (tabs, git, terminals, extensions) plus a chat and agent panel that can read your workspace, propose diffs, run commands you approve, and follow project rules you define.</p>
+          <p>For research computing that combination matters because your work lives in repositories, notebooks-adjacent scripts, SLURM templates, and lab conventions. An agent that can see those files in place is far more useful than one that only sees the last paste you remembered to include.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Why researchers care</p>
+        <h2 class="reveal">Speed with a seatbelt</h2>
+        <div class="prose-block reveal">
+          <p>You already write analysis code, chase obscure traceback lines, draft job scripts, and translate methods sections into runnable steps. Cursor can accelerate the boring middle of that work: explaining a neighbor's pipeline, drafting argparse, turning a checklist into an sbatch template, or comparing a log against a broken script.</p>
+          <p>What it cannot do is replace your judgment about data sensitivity, cluster etiquette, or whether a bootstrap CI actually matches Algorithm 1. This workshop trains the seatbelt habits so the speed does not become an expensive accident.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Workshop description</p>
+        <h2 class="reveal">What you will do this afternoon</h2>
+        <div class="prose-block reveal">
+          <p>You will work through eight use cases, from Privacy Mode and chat hygiene through a GitHub MCP demo, using the synthetic workshop repository rather than your restricted research data. Each block combines a short concept explanation with prompts you copy into Cursor and concrete "done when" checks so you know you finished for real.</p>
+          <p>If CAC SSH is available you may sync the SLURM exercise and practice remote paths; if not, careful local dry-runs still count. The point is reproducible control: Ask before Agent, attach the few files you need, keep rules in the project, and never invent module names or accounts.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="footer-author">Shadi Khalifa, PhD - cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Workshop description</p>
+        <h2 class="reveal">Where your materials live</h2>
+        <div class="prose-block reveal">
+          <p>Hands-on work lives under <span class="path">exercises/</span> for each use case, with shared templates under <span class="path">config/.cursor</span> for rules and skills. Keep <span class="path">handouts/budget-card.md</span> and <span class="path">handouts/privacy-and-context.md</span> nearby; they are the one-page habits cards for privacy, context, and spend.</p>
+          <p>You will not need a separate prompts folder. Every prompt you should type appears on the slides in labeled boxes so you can copy it straight into Cursor while we talk through why it is phrased that way.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Do this first</p>
+        <h2 class="reveal">Privacy Mode how-to</h2>
+        <ul class="bullet-list reveal-stagger">
+          <li>Windows/Linux: press <span class="path">Ctrl+Shift+J</span>. macOS: <span class="path">Cmd+Shift+J</span>.</li>
+          <li>Open <strong>General</strong> and turn <strong>Privacy Mode</strong> on before you paste anything research-shaped.</li>
+          <li>If you are on a Teams or Enterprise seat, check whether an admin already enforces Privacy Mode so you are not fighting policy.</li>
+          <li>Skim <span class="path">handouts/privacy-and-context.md</span> and keep it open while you work.</li>
+        </ul>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Privacy Mode</p>
+        <h2 class="reveal">What it protects, and what it does not</h2>
+        <div class="prose-block reveal">
+          <p>With Privacy Mode on for supported models, Cursor documents that your code is not used to train Cursor or the model providers. That is the main protection you are buying with the toggle, and it is worth flipping before habit takes over.</p>
+          <p>Prompts and code context still travel to the model provider so answers can be generated. This is not a fully local offline mode. It also does not authorize pasting restricted, clinical, or identifiable research data into chat. Some models need admin approval for provider retention, and bring-your-own-key setups follow the provider's own terms.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Objectives</p>
+        <h2 class="reveal">What you should be able to do by the end</h2>
+        <div class="prose-block reveal">
+          <p>You should be able to choose Ask, Plan, Agent, or Multitask with intent, keep one research objective per chat, and ground answers in files you actually attach rather than in hopeful invention. You should also be able to place stable lab policy in Project rules and skills so you stop re-explaining SLURM hygiene in every conversation.</p>
+          <p>On the cluster side, you should leave able to draft a reviewable sbatch script from a checklist, diagnose a broken job from paired stdout/stderr, and decide when a dry-run is the honest stopping point for the day.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Outcomes</p>
+        <h2 class="reveal">Artifacts you will have produced</h2>
+        <div class="prose-block reveal">
+          <p>By the end of the three hours you will have a grounded README for the literacy exercise, a local analysis script with a plot, practice with <span class="path">/goal</span> and a capped <span class="path">/loop</span> against a mock job status file, a methods replication with notes on fidelity limits, and SLURM scripts that keep account and partition as placeholders.</p>
+          <p>You will also have walked an Explorer-Implementer-Reviewer handoff and watched a read-then-approve GitHub MCP path. Those habits transfer to your own repos tomorrow morning.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Agenda - part 1</p>
+        <h2 class="reveal">Morning path: UC0 Foundations through UC3 Skills</h2>
+        <table class="agenda-table reveal">
+          <thead><tr><th>Time</th><th>Use case</th></tr></thead>
+          <tbody>
+            <tr><td class="time">0:00-0:30</td><td>UC0 Foundations: Privacy Mode, chat context, modes, Projects, and tokenomics</td></tr>
+            <tr><td class="time">0:30-0:45</td><td>UC1 Codebase literacy and documentation grounding</td></tr>
+            <tr><td class="time">0:45-1:00</td><td>UC2 Local analysis pipeline</td></tr>
+            <tr><td class="time">1:00-1:10</td><td>Break</td></tr>
+            <tr><td class="time">1:10-1:30</td><td>UC3 Skills, /goal, and /loop</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Agenda - part 2</p>
+        <h2 class="reveal">Afternoon path: UC4 Paper replication through UC7 GitHub MCP</h2>
+        <table class="agenda-table reveal">
+          <thead><tr><th>Time</th><th>Use case</th></tr></thead>
+          <tbody>
+            <tr><td class="time">1:30-1:55</td><td>UC4 Paper method replication</td></tr>
+            <tr><td class="time">1:55-2:25</td><td>UC5 CAC remote work, SLURM jobs, and debugging</td></tr>
+            <tr><td class="time">2:25-2:30</td><td>Break</td></tr>
+            <tr><td class="time">2:30-2:45</td><td>UC6 Multi-agent orchestration</td></tr>
+            <tr><td class="time">2:45-3:00</td><td>UC7 GitHub MCP demo</td></tr>
+          </tbody>
+        </table>
+        <p class="callout reveal">Dry-run paths are first-class. Not everyone needs a live sbatch today.</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide section" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <span class="uc-badge reveal">UC0 Foundations</span>
+        <h2 class="reveal">Foundations: Privacy Mode, chat context, modes, Projects, and tokenomics</h2>
+        <hr class="gold-rule reveal" />
+        <p class="lede reveal">The vocabulary and safety habits everything else depends on.</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">What this use case is</p>
+        <h2 class="reveal">UC0 Foundations: when you need this</h2>
+        <div class="prose-block reveal">
+          <p>You use UC0 Foundations whenever you open Cursor for research work: before you touch cluster scripts, before you attach a methods brief, and before you let an agent edit files. It is deliberately off-cluster and local so you can practice control without burning SLURM time.</p>
+          <p>What you will produce is a mental checklist (Privacy Mode on, mode chosen on purpose, context scoped, budget habits visible) plus a short scratch chat that shows you the cost difference between vague Agent prompts and tight Ask-then-Plan-then-Agent sequences. Keep <span class="path">handouts/budget-card.md</span> beside your laptop.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Concept</p>
+        <h2 class="reveal">Large language models in plain language</h2>
+        <div class="prose-block reveal">
+          <p>A large language model predicts likely next tokens given the text you and the tools provide. It is extraordinarily good at drafting, explaining, and transforming code-shaped text, and it is also cheerfully willing to invent module names, paper details, or cluster accounts that sound plausible.</p>
+          <p>Your job is to treat the model as a fast junior collaborator that must cite files, stay inside placeholders when reality is unknown, and accept "I do not know" as a valid answer. Scientific judgment stays with you.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Concept</p>
+        <h2 class="reveal">What "agent" means here</h2>
+        <div class="prose-block reveal">
+          <p>In Cursor, an agent is not merely a chat reply. It is a loop that can read your workspace, propose edits, call tools you have enabled, and iterate toward a goal you stated. Ask mode mostly explains; Agent mode can change the tree.</p>
+          <p>That power is why mode choice is a budget and safety decision. You invite an agent into Agent mode when the goal is clear, the files are attached, and you are ready to review diffs. You stay in Ask when you are still mapping the territory.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Concept</p>
+        <h2 class="reveal">RAG-style grounding without the buzzword fog</h2>
+        <div class="prose-block reveal">
+          <p>Retrieval-augmented generation, in workshop terms, means you point the model at the documents that should constrain the answer (lab conventions, checklists, paper briefs) instead of hoping the model remembers your lab's policy from the internet.</p>
+          <p>In Cursor you do that with <span class="path">@</span> file mentions, Project rules, and skills. When the model answers a conventions question, you should see quotes or clear pointers to the file it used. If it cannot find the policy, it should say so rather than invent one.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Concept</p>
+        <h2 class="reveal">MCP: Model Context Protocol</h2>
+        <div class="prose-block reveal">
+          <p>MCP is a standard way for an agent to talk to external tools (issue trackers, browsers, databases) through servers you connect, with scopes you choose. Think of it as a careful USB port for tools rather than pasting API tokens into random prompts.</p>
+          <p>You will see MCP for real in UC7 GitHub MCP demo. Until then, remember the habit: start read-only, draft writes for human approval, and never grant a classroom demo the keys to a production lab org.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Concept</p>
+        <h2 class="reveal">Projects: durable context for a research repo</h2>
+        <div class="prose-block reveal">
+          <p>A Project in Cursor is how you keep stable guidance next to the code: rules that always apply, skills the agent can load for recurring jobs like drafting SLURM scripts, and the habit of opening the right folder so indexing and <span class="path">@</span> mentions stay relevant.</p>
+          <p>Workshop templates live under <span class="path">config/.cursor</span>. You will copy rules and skills into your project (or personal skills store) rather than retyping "do not invent CAC modules" into every chat.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <div class="two-col">
+          <div>
+            <p class="kicker reveal">Modes</p>
+            <h2 class="reveal">Ask, Plan, Agent, Multitask</h2>
+            <div class="prose-block reveal">
+            <p>Ask is cheap reconnaissance and explanation. Plan outlines steps without editing. Agent implements with your review. Multitask runs parallel agents when scopes are disjoint and your budget allows.</p>
+            <p>Default order for research work: Ask, then Plan, then Agent. Multitask last.</p>
+            </div>
+          </div>
+          <div class="img-frame reveal">
+            <img src="assets/modes-diagram.jpg" alt="" />
+          </div>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Modes in practice</p>
+        <h2 class="reveal">Pick the mode that matches the risk</h2>
+        <div class="grid-2 reveal-stagger">
+          <div class="tile">
+            <h3>Ask</h3>
+            <p>Explain files, diagnose logs, extract methods. No edits. Lowest blast radius.</p>
+          </div>
+          <div class="tile">
+            <h3>Plan</h3>
+            <p>Name functions, packages, and verification steps before any diff appears.</p>
+          </div>
+          <div class="tile">
+            <h3>Agent</h3>
+            <p>Implement a plan you already agree with. Review every diff.</p>
+          </div>
+          <div class="tile">
+            <h3>Multitask</h3>
+            <p>Parallel agents on disjoint paths. Never two writers on one file.</p>
+          </div>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Chat context</p>
+        <h2 class="reveal">What belongs in the same chat</h2>
+        <ul class="bullet-list reveal-stagger">
+          <li>One objective, short follow-ups, and <span class="path">@</span> only the files you need for that objective.</li>
+          <li>Ask then Agent is fine when the goal has not changed and the plan is still visible.</li>
+          <li>Stable policy should live in rules and skills, not as a novel you re-paste each morning.</li>
+          <li>Keep restricted or clinical data out of workshop and public threads entirely.</li>
+        </ul>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Chat context</p>
+        <h2 class="reveal">What does not belong in the same chat</h2>
+        <ul class="bullet-list reveal-stagger">
+          <li>Unrelated topic hopping (README polish morphing into paper replication mid-thread).</li>
+          <li>Re-pasting huge SLURM logs when a <span class="path">tail</span> or <span class="path">grep</span> summary would do.</li>
+          <li>Scope creep after you already said "done".</li>
+          <li>Leaving <span class="path">/loop</span> running while you start another expensive task.</li>
+        </ul>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">When context is full</p>
+        <h2 class="reveal">Quality slips before the UI looks dramatic</h2>
+        <div class="prose-block reveal">
+          <p>Chat context is finite: prior turns, attachments, rules, tool output, and replies all compete for space. When it fills, older turns may drop or compact. Answers get vaguer, contradict earlier decisions, or re-ask questions you already settled, while cost often stays high.</p>
+          <p>The fix is boring and effective: open a new chat, paste a three-line handoff, and <span class="path">@</span> the key files (or a short <span class="path">HANDOFF.md</span>). Put durable policy in rules so you are not rebuilding the lab every session.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <div class="two-col">
+          <div>
+            <p class="kicker reveal">Tokenomics</p>
+            <h2 class="reveal">Included usage vs on-demand</h2>
+            <div class="prose-block reveal">
+            <p>Your plan includes a monthly usage pool. On-demand usage is pay-as-you-go after that pool, billed for what you used, not a prepaid token pack you buy in advance.</p>
+            <p>Check the dashboard. On Teams, someone should set spending limits before a lab discovers curiosity is expensive.</p>
+            </div>
+          </div>
+          <div class="img-frame reveal">
+            <img src="assets/tokenomics.jpg" alt="" />
+          </div>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Budget habits</p>
+        <h2 class="reveal">Twelve habits from the budget card</h2>
+        <ul class="bullet-list reveal-stagger">
+          <li>Privacy Mode first; still no restricted data in prompts.</li>
+          <li>Ask → Plan → Agent → Multitask. Attach few files. One goal per chat.</li>
+          <li>Smaller/faster models for explain; stronger models for hard bugs or method fidelity.</li>
+          <li>Cap <span class="path">/loop</span>. One write-scope per agent. MCP: draft, then you click send.</li>
+        </ul>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC0 Foundations - hands-on</p>
+        <h2 class="reveal">Prompt A - Ask mode reconnaissance</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Ask mode)</p>
+        <pre class="prompt-box reveal">In Ask mode: In two short paragraphs, explain what files exist under exercises/uc1-codebase-literacy and what problem they seem to solve. Do not edit anything.</pre>
+        <p class="callout reveal">You are practicing cheap reconnaissance before any edit.</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC0 Foundations - hands-on</p>
+        <h2 class="reveal">Prompt B - Plan mode outline</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Plan mode)</p>
+        <pre class="prompt-box reveal">In Plan mode: I want a README for exercises/uc1-codebase-literacy that a new lab member can trust. Outline sections, which files you would read, and what you would verify by running code. Do not edit yet.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC0 Foundations - hands-on</p>
+        <h2 class="reveal">Prompt C - Agent mode narrow edit</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Agent mode)</p>
+        <pre class="prompt-box reveal">In Agent mode: Using your plan, draft exercises/uc1-codebase-literacy/README.md from README.starter.md. Keep claims tied to files you actually read. Do not touch other use cases.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC0 Foundations - hands-on</p>
+        <h2 class="reveal">Prompt D - Token sanity check</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Ask mode)</p>
+        <pre class="prompt-box reveal">In Ask mode: List five ways the previous Agent prompt could have wasted tokens, and rewrite the Agent prompt to be tighter without losing the goal.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC0 Foundations - hands-on</p>
+        <h2 class="reveal">Prompt E - Context hygiene</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Ask mode)</p>
+        <pre class="prompt-box reveal">In Ask mode: We just finished the UC1 README goal. Should I keep using this same chat for UC4 paper replication? Explain in five bullets what happens to answer quality when a chat context is nearly full, and draft a three-line handoff I could paste into a new chat.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC0 Foundations - hands-on</p>
+        <h2 class="reveal">Prompt F - On-demand usage (discuss, no tokens needed)</h2>
+        <ul class="bullet-list reveal-stagger">
+          <li>What is included monthly usage versus on-demand usage on your seat?</li>
+          <li>Is on-demand a prepaid pack, or pay-as-you-go after the pool? (It is pay-as-you-go.)</li>
+          <li>Who in your lab should set spending limits on a Teams account?</li>
+          <li>Open <span class="path">handouts/budget-card.md</span> and mark the habits you already follow.</li>
+        </ul>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC0 Foundations</p>
+        <h2 class="reveal">You are done with foundations when</h2>
+        <div class="done-when reveal">
+          <h3>Done when</h3>
+          <ul class="bullet-list">
+            <li>Privacy Mode is on and you can explain what it does and does not protect.</li>
+            <li>You completed Ask → Plan → Agent on a narrow README goal without editing other use cases.</li>
+            <li>You can describe context-full symptoms and produce a three-line handoff.</li>
+            <li>You know included vs on-demand usage and where the budget card lives.</li>
+          </ul>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide section" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <span class="uc-badge reveal">UC1 Codebase literacy</span>
+        <h2 class="reveal">Codebase literacy and documentation grounding</h2>
+        <hr class="gold-rule reveal" />
+        <p class="lede reveal">Explain real files, then force the answer to cite lab conventions.</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">What this use case is</p>
+        <h2 class="reveal">UC1 Codebase literacy: when you need this</h2>
+        <div class="prose-block reveal">
+          <p>You reach for UC1 Codebase literacy and documentation grounding when you inherit a lab folder, need to onboard yourself to a pipeline, or must write a README that a new student can trust. Work stays local under <span class="path">exercises/uc1-codebase-literacy</span>; nothing needs the cluster.</p>
+          <p>You will produce a README whose run instructions match the repo and at least one claim explicitly tied to <span class="path">docs/lab-conventions.md</span>. Catching one model mistake (or confirming there was none) is part of the success criteria, not a failure.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Concept</p>
+        <h2 class="reveal">Literacy before edits</h2>
+        <div class="prose-block reveal">
+          <p>Researchers often ask an agent to "clean up the code" before anyone can say what the code does. UC1 Codebase literacy flips that order: Ask the agent to explain <span class="path">normalize.py</span> and <span class="path">pipeline.py</span> like you write Python only occasionally, including how messy CSV input can break assumptions.</p>
+          <p>Only after that explanation do you ground answers in lab conventions and let Agent update the README. Grounding is how you stop polite fiction from becoming lab policy.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC1 Codebase literacy - hands-on</p>
+        <h2 class="reveal">Step 1 - Ask for an explanation</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Ask mode)</p>
+        <pre class="prompt-box reveal">@exercises/uc1-codebase-literacy/src Explain normalize.py and pipeline.py like I am a researcher who writes Python occasionally. What does each function do, and what could go wrong with messy CSV input?</pre>
+        <p class="callout reveal">Open folder: exercises/uc1-codebase-literacy (or the whole workshop repo).</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC1 Codebase literacy - hands-on</p>
+        <h2 class="reveal">Step 2 - Ground with docs</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Ask mode)</p>
+        <pre class="prompt-box reveal">Using @exercises/uc1-codebase-literacy/docs/lab-conventions.md and the source files, answer: Does pipeline.py already follow our lab conventions? Quote the convention text you relied on. If something is missing, say what is missing without inventing policy.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC1 Codebase literacy - hands-on</p>
+        <h2 class="reveal">Step 3 - Agent writes the README</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Agent mode)</p>
+        <pre class="prompt-box reveal">Update exercises/uc1-codebase-literacy/README.md so a new student can run the pipeline and knows where conventions live. Cite file paths. Do not invent CAC module names.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC1 Codebase literacy</p>
+        <h2 class="reveal">Done when</h2>
+        <div class="done-when reveal">
+          <h3>Done when</h3>
+          <ul class="bullet-list">
+            <li>README run instructions match the repo.</li>
+            <li>At least one claim is explicitly tied to lab-conventions.md.</li>
+            <li>You caught one model mistake, or confirmed there was none after checking.</li>
+          </ul>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide section" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <span class="uc-badge reveal">UC2 Local analysis pipeline</span>
+        <h2 class="reveal">Local analysis pipeline</h2>
+        <hr class="gold-rule reveal" />
+        <p class="lede reveal">Plan a small script, implement it, then harden lightly.</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">What this use case is</p>
+        <h2 class="reveal">UC2 Local analysis pipeline: when you need this</h2>
+        <div class="prose-block reveal">
+          <p>UC2 Local analysis pipeline is the everyday laptop workflow: load a CSV, clean empties, summarize by condition, write a plot. You work in <span class="path">exercises/uc2-analysis</span> with synthetic <span class="path">data/measurements.csv</span>, still off-cluster.</p>
+          <p>You will produce a runnable <span class="path">analyze.py</span> (from the starter), an <span class="path">output/mean_by_condition.png</span> plot, and light argparse so paths are not hard-coded forever. Empty treatment rows must not crash the summary.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Concept</p>
+        <h2 class="reveal">Plan names the packages before Agent spends tokens inventing a framework</h2>
+        <div class="prose-block reveal">
+          <p>Plan mode is where you insist on a small tool surface: standard library plus pandas and matplotlib only if that is already reasonable for your audience. You list steps and packages before any file changes, which keeps Agent from "helpfully" introducing a project generator you did not ask for.</p>
+          <p>After the script runs, a narrow harden pass (argparse, one-line docstring) beats a premature rewrite into a package with plugins.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC2 Local analysis - hands-on</p>
+        <h2 class="reveal">Step 1 - Plan the analysis</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Plan mode)</p>
+        <pre class="prompt-box reveal">Plan mode: Expand analyze_starter.py into a small analysis script that
+1) loads data/measurements.csv
+2) drops empty values
+3) summarizes mean and count by condition
+4) writes a simple bar plot to output/mean_by_condition.png
+List packages you will use. Prefer the standard library plus pandas/matplotlib only if already reasonable for the audience. Do not edit yet.</pre>
+        <p class="callout reveal">Open: exercises/uc2-analysis</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC2 Local analysis - hands-on</p>
+        <h2 class="reveal">Step 2 - Agent implements</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Agent mode)</p>
+        <pre class="prompt-box reveal">Agent mode: Implement the plan in analyze.py (you may replace or extend the starter). Create output/ if needed. Keep the script runnable with: python analyze.py</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC2 Local analysis - hands-on</p>
+        <h2 class="reveal">Step 3 - Light harden</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Agent mode)</p>
+        <pre class="prompt-box reveal">Add argparse so I can pass --data and --outdir. Add a one-line docstring at the top describing the expected columns. Do not add a large framework.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC2 Local analysis pipeline</p>
+        <h2 class="reveal">Done when</h2>
+        <div class="done-when reveal">
+          <h3>Done when</h3>
+          <ul class="bullet-list">
+            <li>The script runs locally with python analyze.py.</li>
+            <li>The plot exists under output/.</li>
+            <li>An empty treatment row does not crash the summary.</li>
+          </ul>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide section" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <span class="uc-badge reveal">UC3 Skills, /goal, and /loop</span>
+        <h2 class="reveal">Skills, /goal, and /loop</h2>
+        <hr class="gold-rule reveal" />
+        <p class="lede reveal">Reusable skills, a sticky goal statement, and capped polling.</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">What this use case is</p>
+        <h2 class="reveal">UC3 Skills, /goal, and /loop: when you need this</h2>
+        <div class="prose-block reveal">
+          <p>UC3 Skills, /goal, and /loop is for the moment your analysis script needs to become job-shaped without you retyping the same SLURM advice. You copy workshop skill and rule templates from <span class="path">config/.cursor</span>, set a durable goal, and optionally poll a mock status file so you learn to stop loops on purpose.</p>
+          <p>Work is mostly local; the skill drafts SLURM content with placeholders, and you dry-run only. Materials live under <span class="path">exercises/uc3-skills-directives</span> with a mock status file you can edit yourself.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Skills</p>
+        <h2 class="reveal">Reusable playbooks the agent can load on demand</h2>
+        <div class="prose-block reveal">
+          <p>A skill is a packaged set of instructions for a recurring job (here, drafting a reviewable sbatch script with time, cpus, mem, logs, and an explicit working directory). Unlike a one-off chat paragraph, a skill survives across sessions once it lives in your project or personal skills store.</p>
+          <p>Before prompts, copy <span class="path">config/.cursor/skills/cac-slurm-job</span> into the project <span class="path">.cursor/skills/</span> (or your user skills store) and copy <span class="path">config/.cursor/rules/cac-research.mdc</span> into <span class="path">.cursor/rules/</span>.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">/goal - when to use it</p>
+        <h2 class="reveal">A sticky north star across several tool steps</h2>
+        <div class="prose-block reveal">
+          <p>Use <span class="path">/goal</span> when the next fifteen minutes will involve multiple prompts, a skill invocation, and maybe a loop, and you do not want the agent to quietly redefine success as "wrote any script." The goal statement stays visible and useful across steps.</p>
+          <p>A good research goal names the artifact, the environment constraints (SLURM-ready, dry-run only), and the non-goals (do not submit). Vague goals like "make it better" invite expensive wandering.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">/goal - research example</p>
+        <h2 class="reveal">Making analyze.py job-ready without submitting</h2>
+        <div class="prose-block reveal">
+          <p>Imagine your script from UC2 Local analysis pipeline already runs on the laptop. The research need is not "more features"; it is "this must be callable under SLURM with a data path via env or argparse, plus a draft sbatch that uses the cac-slurm-job skill."</p>
+          <p>That is a single goal with clear exit criteria. You will paste it with <span class="path">/goal</span>, then invoke the skill explicitly, then optionally watch a mock job status file with <span class="path">/loop</span> so you practice stopping.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC3 Skills and directives - hands-on</p>
+        <h2 class="reveal">Step 1 - Set /goal</h2>
+        <p class="prompt-label reveal">Copy into Cursor</p>
+        <pre class="prompt-box reveal">/goal Make exercises/uc2-analysis/analyze.py (or analyze_starter.py if analyze.py is missing) ready to run under SLURM on CAC: working entrypoint, data path via env or argparse, and a draft sbatch script using the cac-slurm-job skill. Dry-run only; do not submit.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC3 Skills and directives - hands-on</p>
+        <h2 class="reveal">Step 2 - Invoke the skill explicitly</h2>
+        <p class="prompt-label reveal">Copy into Cursor</p>
+        <pre class="prompt-box reveal">Using the cac-slurm-job skill, draft exercises/uc5-cac-slurm/scripts/job.generated.sh for python scripts/analyze_job.py with 10 minutes, 1 CPU, 2G memory. Keep account/partition as placeholders. List verify-before-submit bullets.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">/loop - when to use it</p>
+        <h2 class="reveal">Polling something that changes outside the chat</h2>
+        <div class="prose-block reveal">
+          <p>Use <span class="path">/loop</span> when you are watching an external signal: a job status file, a build log path, a mock queue. It is not a substitute for sitting at <span class="path">squeue</span> on a login node with a heavy process, and it is not an excuse to leave an agent spending tokens forever.</p>
+          <p>Always set an interval and a maximum number of ticks, and define the stop states (DONE, FAILED) up front. Unbounded loops are how curiosity becomes an invoice.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">/loop - exact how</p>
+        <h2 class="reveal">Watch STATUS.mock.txt like a tiny SLURM status board</h2>
+        <div class="prose-block reveal">
+          <p>Open <span class="path">exercises/uc3-skills-directives/STATUS.mock.txt</span>. It starts with <span class="path">JOB_STATE=RUNNING</span> and a note that you may edit the state. You will ask Cursor to read that file on an interval, summarize JOB_STATE in one sentence, and stop when the state is DONE or FAILED, or after four ticks.</p>
+          <p>After one or two ticks, edit the file yourself to <span class="path">JOB_STATE=DONE</span> (or FAILED) so you see a clean stop. That edit is the whole point: you are the human who decides the loop is finished.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC3 Skills and directives - hands-on</p>
+        <h2 class="reveal">Step 3 - Short capped /loop</h2>
+        <p class="prompt-label reveal">Copy into Cursor</p>
+        <pre class="prompt-box reveal">/loop 30s Read exercises/uc3-skills-directives/STATUS.mock.txt and summarize JOB_STATE in one sentence. Stop when JOB_STATE is DONE or FAILED, or after 4 ticks, whichever comes first.</pre>
+        <p class="callout reveal">After 1-2 ticks, edit STATUS.mock.txt to JOB_STATE=DONE yourself.</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide dark" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">/loop results</p>
+        <h2 class="reveal">What tick-by-tick looks like</h2>
+        <ol class="tick-list reveal-stagger">
+          <li><strong>Tick 1:</strong> Agent reads STATUS.mock.txt, reports JOB_STATE=RUNNING, waits ~30s.</li>
+          <li><strong>Tick 2:</strong> Still RUNNING unless you edited the file; one-sentence summary again.</li>
+          <li><strong>You edit:</strong> Change JOB_STATE to DONE (or FAILED) in the mock file.</li>
+          <li><strong>Tick 3:</strong> Agent sees DONE/FAILED and stops, or hits the 4-tick cap and stops anyway.</li>
+        </ol>
+        <p class="callout reveal">Stopping on purpose is the skill. Abandoned loops are the anti-pattern.</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">/loop - when to stop</p>
+        <h2 class="reveal">Stop rules you should treat as non-negotiable</h2>
+        <ul class="bullet-list reveal-stagger">
+          <li>Stop immediately when JOB_STATE is DONE or FAILED.</li>
+          <li>Stop when you hit the max tick count, even if still RUNNING.</li>
+          <li>Stop if the loop is not helping and you need those tokens for Agent work.</li>
+          <li>Never leave a loop running while you start Multitask or a second expensive chat.</li>
+        </ul>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC3 Skills, /goal, and /loop</p>
+        <h2 class="reveal">Done when</h2>
+        <div class="done-when reveal">
+          <h3>Done when</h3>
+          <ul class="bullet-list">
+            <li>The skill produced a reviewable script with placeholders.</li>
+            <li>The goal statement stayed visible and useful across steps.</li>
+            <li>The loop stopped on purpose (DONE/FAILED or tick cap), not by abandonment.</li>
+          </ul>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide section" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <span class="uc-badge reveal">UC4 Paper method replication</span>
+        <h2 class="reveal">Paper method replication</h2>
+        <hr class="gold-rule reveal" />
+        <p class="lede reveal">Extract the method, plan functions, implement, then diff against Algorithm 1.</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">What this use case is</p>
+        <h2 class="reveal">UC4 Paper method replication: when you need this</h2>
+        <div class="prose-block reveal">
+          <p>UC4 Paper method replication is for the common research need: a short methods brief (or paper supplement) must become runnable code with honest fidelity notes. You work in <span class="path">exercises/uc4-paper-replication</span> using the workshop measurements CSV from the analysis exercise.</p>
+          <p>You will produce <span class="path">replicate.py</span>, printed mean difference and bootstrap CI with seed 7, and a short <span class="path">REPLICATION_NOTES.md</span> stating limits. Acceptance checks in the brief pass or are marked incomplete without fiction.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <div class="two-col">
+          <div>
+            <p class="kicker reveal">Concept</p>
+            <h2 class="reveal">Fidelity over vibes</h2>
+            <div class="prose-block reveal">
+            <p>Ask extracts the research question, Algorithm 1 steps, defaults, and acceptance checks before anyone writes code. Plan names functions and seed handling. Agent implements. Ask again diffs the implementation line by line against Algorithm 1.</p>
+            <p>Approximations belong in REPLICATION_NOTES.md, not in silent shortcuts.</p>
+            </div>
+          </div>
+          <div class="img-frame reveal">
+            <img src="assets/paper-replication.jpg" alt="" />
+          </div>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC4 Paper replication - hands-on</p>
+        <h2 class="reveal">Step 1 - Ask extracts the method</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Ask mode)</p>
+        <pre class="prompt-box reveal">Ask mode: Read PAPER_BRIEF.md. Extract the research question, Algorithm 1 steps, defaults, and acceptance checks as a bullet list I can implement against. Do not write code yet.</pre>
+        <p class="callout reveal">Open: exercises/uc4-paper-replication - Data: ../uc2-analysis/data/measurements.csv</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC4 Paper replication - hands-on</p>
+        <h2 class="reveal">Step 2 - Plan the implementation</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Plan mode)</p>
+        <pre class="prompt-box reveal">Plan mode: Propose a Python implementation plan for Algorithm 1 that satisfies the acceptance checks, including random seed handling and how you will exclude empty values. Name the functions you will create.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC4 Paper replication - hands-on</p>
+        <h2 class="reveal">Step 3 - Agent implements</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Agent mode)</p>
+        <pre class="prompt-box reveal">Agent mode: Implement replicate.py from replicate_starter.py against PAPER_BRIEF.md and the measurements CSV. Print observed mean difference and 95% bootstrap CI. Use seed=7. Add a short REPLICATION_NOTES.md stating fidelity limits.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC4 Paper replication - hands-on</p>
+        <h2 class="reveal">Step 4 - Verify against Algorithm 1</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Ask mode)</p>
+        <pre class="prompt-box reveal">Ask mode: Diff your implementation against Algorithm 1 line by line. Call out any step that is missing or approximated.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC4 Paper method replication</p>
+        <h2 class="reveal">Done when</h2>
+        <div class="done-when reveal">
+          <h3>Done when</h3>
+          <ul class="bullet-list">
+            <li>Acceptance checks 1-4 in PAPER_BRIEF.md pass, or are honestly marked incomplete.</li>
+            <li>REPLICATION_NOTES.md states fidelity limits in plain language.</li>
+            <li>Seed 7 is used and the CI printout matches what you asked for.</li>
+          </ul>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide section" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <span class="uc-badge reveal">UC5 CAC remote work, SLURM, and debugging</span>
+        <h2 class="reveal">CAC remote work, SLURM jobs, and debugging</h2>
+        <hr class="gold-rule reveal" />
+        <p class="lede reveal">SSH when available, checklist-driven drafts, logs that tell the truth.</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">What this use case is</p>
+        <h2 class="reveal">UC5 CAC remote work, SLURM jobs, and debugging: when you need this</h2>
+        <div class="prose-block reveal">
+          <p>UC5 CAC remote work, SLURM jobs, and debugging is the bridge from laptop scripts to CAC. If SSH is available you may connect and keep work under a demo directory; if not, you stay local and treat drafts as dry-runs. Either path is legitimate workshop success.</p>
+          <p>Under <span class="path">exercises/uc5-cac-slurm</span> you will review <span class="path">SLURM_CHECKLIST.md</span>, generate a script with YOUR_ACCOUNT / YOUR_PARTITION placeholders, diagnose paired logs from a broken job, and write a fixed script without inventing real account names.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <div class="two-col">
+          <div>
+            <p class="kicker reveal">Concept</p>
+            <h2 class="reveal">Login node vs compute node</h2>
+            <div class="prose-block reveal">
+            <p>Heavy compute does not belong on the login node. Editing, git, and light checks are fine; analysis and training belong in jobs on compute nodes through SLURM.</p>
+            <p>Never invent CAC account names, partitions, or module versions. Use placeholders and the checklist.</p>
+            </div>
+          </div>
+          <div class="img-frame reveal">
+            <img src="assets/ssh-slurm.jpg" alt="" />
+          </div>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Concept</p>
+        <h2 class="reveal">Checklist-driven drafts beat folklore</h2>
+        <div class="prose-block reveal">
+          <p>A good sbatch script states time, cpus, mem, output and error logs, and an explicit working directory. The workshop template and <span class="path">SLURM_CHECKLIST.md</span> exist so the agent (and you) stop relying on half-remembered flags from a different cluster.</p>
+          <p>When logs disagree with the script, diagnose both stdout and stderr together with the broken script before you "fix" anything. Ranking failures beats guessing the first line that looks angry.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC5 CAC + SLURM - Part A</p>
+        <h2 class="reveal">Remote project (if SSH is up)</h2>
+        <p class="prompt-label reveal">Copy into Cursor (when connected to CAC)</p>
+        <pre class="prompt-box reveal">We are connected to CAC over SSH. Confirm the current workspace path, create a directory ~/cursor-workshop-demo if missing, and sync only the uc5-cac-slurm exercise files there if appropriate. Summarize login-node vs compute-node rules in three bullets.</pre>
+        <p class="callout reveal">If SSH is unavailable, stay local and treat Parts B and C as dry-run.</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC5 CAC + SLURM - Part B</p>
+        <h2 class="reveal">Plan what must change before submit</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Plan mode)</p>
+        <pre class="prompt-box reveal">Plan mode: Using exercises/uc5-cac-slurm/scripts/job.template.sh and SLURM_CHECKLIST.md, list what must change before a real submit on CAC.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC5 CAC + SLURM - Part B</p>
+        <h2 class="reveal">Agent drafts job.generated.sh</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Agent mode)</p>
+        <pre class="prompt-box reveal">Agent mode: Create scripts/job.generated.sh from the template for analyze_job.py. Keep YOUR_ACCOUNT and YOUR_PARTITION placeholders. Fix the data path assumption in comments.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC5 CAC + SLURM - Part C</p>
+        <h2 class="reveal">Diagnose the broken job from logs</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Ask mode)</p>
+        <pre class="prompt-box reveal">Ask mode: Diagnose exercises/uc5-cac-slurm/logs/slurm-4242.out and slurm-4242.err together with scripts/job.broken.sh. Rank the failures. Propose a minimal fixed script.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC5 CAC + SLURM - Part C</p>
+        <h2 class="reveal">Write the fixed script</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Agent mode)</p>
+        <pre class="prompt-box reveal">Agent mode: Write scripts/job.fixed.sh that addresses the module, path, and data issues without inventing a real CAC account.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC5 CAC remote work, SLURM jobs, and debugging</p>
+        <h2 class="reveal">Done when</h2>
+        <div class="done-when reveal">
+          <h3>Done when</h3>
+          <ul class="bullet-list">
+            <li>You reviewed SLURM_CHECKLIST.md.</li>
+            <li>You can explain the broken job in plain language.</li>
+            <li>job.fixed.sh exists. Submit is optional; dry-run review counts.</li>
+          </ul>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide section" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <span class="uc-badge reveal">UC6 Multi-agent orchestration</span>
+        <h2 class="reveal">Multi-agent orchestration</h2>
+        <hr class="gold-rule reveal" />
+        <p class="lede reveal">Explorer, Implementer, Reviewer, with you as the gate.</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">What this use case is</p>
+        <h2 class="reveal">UC6 Multi-agent orchestration: when you need this</h2>
+        <div class="prose-block reveal">
+          <p>UC6 Multi-agent orchestration is for work that benefits from separated roles: one read-only map of the tree, one implementer with a narrow write scope, one reviewer against a checklist. Follow <span class="path">exercises/uc6-multi-agent/ORCHESTRATION.md</span>.</p>
+          <p>You will produce Explorer bullets, a generated sbatch under the uc5 scripts folder, and a pass/fail review against the checklist. No sbatch submit is required for full credit. You remain the human gate: accept, request revisions, or stop.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <div class="two-col">
+          <div>
+            <p class="kicker reveal">Concept</p>
+            <h2 class="reveal">One write-scope per agent</h2>
+            <div class="prose-block reveal">
+            <p>Parallel agents are useful when paths are disjoint. Two agents editing the same file is how you get a merge conflict dressed up as productivity.</p>
+            <p>Optional Multitask is only worth the budget when Explorer reads while Implementer writes elsewhere, then you merge judgment manually.</p>
+            </div>
+          </div>
+          <div class="img-frame reveal">
+            <img src="assets/multi-agent.jpg" alt="" />
+          </div>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC6 Multi-agent - hands-on</p>
+        <h2 class="reveal">Agent 1 - Explorer (Ask, read-only)</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Ask mode)</p>
+        <pre class="prompt-box reveal">Ask mode / Explorer role: Map exercises/uc5-cac-slurm for a teammate who will write an sbatch script. Max 10 bullets: key files, risks, and what not to invent.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC6 Multi-agent - hands-on</p>
+        <h2 class="reveal">Agent 2 - Implementer</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Plan then Agent)</p>
+        <pre class="prompt-box reveal">Implementer role: Create exercises/uc5-cac-slurm/scripts/job.generated.sh for analyze_job.py. Edit only under exercises/uc5-cac-slurm/scripts/. Assumptions as comments. Dry-run only.</pre>
+        <p class="callout reveal">Paste the Explorer bullets first so Implementer inherits the map.</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC6 Multi-agent - hands-on</p>
+        <h2 class="reveal">Agent 3 - Reviewer (Ask)</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Ask mode)</p>
+        <pre class="prompt-box reveal">Ask mode / Reviewer role: Grade scripts/job.generated.sh against SLURM_CHECKLIST.md. Pass/fail per item. Do not edit files.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Human gate</p>
+        <h2 class="reveal">You decide; the agents do not</h2>
+        <ul class="bullet-list reveal-stagger">
+          <li>Accept the script, request specific revisions, or stop for the day.</li>
+          <li>No sbatch is required for full workshop credit.</li>
+          <li>If you try Multitask, keep write scopes disjoint and merge manually.</li>
+          <li>Budget rule: Multitask last, and only when the parallel work is truly parallel.</li>
+        </ul>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC6 Multi-agent orchestration</p>
+        <h2 class="reveal">Done when</h2>
+        <div class="done-when reveal">
+          <h3>Done when</h3>
+          <ul class="bullet-list">
+            <li>Explorer map exists (max 10 bullets).</li>
+            <li>Implementer wrote only under the allowed scripts path.</li>
+            <li>Reviewer produced pass/fail against SLURM_CHECKLIST.md.</li>
+            <li>You made an explicit accept / revise / stop decision.</li>
+          </ul>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide section" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <span class="uc-badge reveal">UC7 GitHub MCP demo</span>
+        <h2 class="reveal">GitHub MCP demo</h2>
+        <hr class="gold-rule reveal" />
+        <p class="lede reveal">Read with tools, draft writes, you click send.</p>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">What this use case is</p>
+        <h2 class="reveal">UC7 GitHub MCP demo: when you need this</h2>
+        <div class="prose-block reveal">
+          <p>UC7 GitHub MCP demo shows how an agent talks to GitHub through MCP with minimal scopes. You use it when issue triage or README pointers should not require pasting personal access tokens into chat. Materials and notes live under <span class="path">exercises/uc7-github-mcp</span>.</p>
+          <p>You will watch a read path (list open issues, summarize titles) and a write path that stops at a draft until you say to post. The safety discussion is part of the deliverable: what is risky on a shared lab repo, and what narrower alternative you would recommend for class use.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <div class="two-col">
+          <div>
+            <p class="kicker reveal">Concept</p>
+            <h2 class="reveal">MCP with a human in the loop</h2>
+            <div class="prose-block reveal">
+            <p>Connect GitHub MCP with minimal scopes before the demo prompts. Prefer read-only first.</p>
+            <p>Draft comments and PRs in chat; posting is a separate, explicit human action.</p>
+            </div>
+          </div>
+          <div class="img-frame reveal">
+            <img src="assets/mcp-github.jpg" alt="" />
+          </div>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC7 GitHub MCP - hands-on</p>
+        <h2 class="reveal">Demo prompt 1 - read only</h2>
+        <p class="prompt-label reveal">Copy into Cursor (with GitHub MCP connected)</p>
+        <pre class="prompt-box reveal">Using the GitHub MCP tools, list the open issues on <ORG/REPO> (your instructor will fill this). Summarize the top 3 by title only. Do not comment or close anything.</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC7 GitHub MCP - hands-on</p>
+        <h2 class="reveal">Demo prompt 2 - draft, then wait</h2>
+        <p class="prompt-label reveal">Copy into Cursor</p>
+        <pre class="prompt-box reveal">Draft a polite issue comment for issue #<N> that points newcomers to the workshop README section on SLURM dry-runs. Show me the comment text first. Do not post until I say "post it".</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC7 GitHub MCP - hands-on</p>
+        <h2 class="reveal">Optional follow-up - risk discussion</h2>
+        <p class="prompt-label reveal">Copy into Cursor (Ask mode)</p>
+        <pre class="prompt-box reveal">Ask mode: What GitHub MCP actions are risky on a shared lab repo, and what narrower alternative would you recommend for class use?</pre>
+        
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">UC7 GitHub MCP demo</p>
+        <h2 class="reveal">Done when</h2>
+        <div class="done-when reveal">
+          <h3>Done when</h3>
+          <ul class="bullet-list">
+            <li>The read path was demonstrated without writing to GitHub.</li>
+            <li>The write path was shown as draft-then-approve.</li>
+            <li>You completed a short scope and safety discussion.</li>
+          </ul>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Materials map</p>
+        <h2 class="reveal">Where to look after class</h2>
+        <ul class="bullet-list reveal-stagger">
+          <li><span class="path">exercises/uc1-codebase-literacy</span> through <span class="path">exercises/uc7-github-mcp</span></li>
+          <li><span class="path">config/.cursor</span> for rules and skills templates</li>
+          <li><span class="path">handouts/budget-card.md</span> and <span class="path">handouts/privacy-and-context.md</span></li>
+          <li>This deck: <span class="path">presentations/cursor-cac-workshop.html</span></li>
+        </ul>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide content" data-slide>
+      <header class="slide-header"><span class="brand-mark">Centre for Advanced Computing - Queen's University</span></header>
+      <div class="slide-content">
+        <p class="kicker reveal">Closing habits</p>
+        <h2 class="reveal">Take these back to your own repo</h2>
+        <div class="prose-block reveal">
+          <p>Privacy Mode on, Ask before Agent, few attachments, one goal per chat, rules and skills for durable policy, dry-run SLURM review as legitimate success, MCP drafts until you approve. Those habits matter more than any single clever prompt.</p>
+          <p>When something fails on CAC, bring the checklist and both logs. When something fails in chat, bring a new thread and a three-line handoff. Curiosity is allowed; unbounded spend is not.</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="site">cac.queensu.ca</span></footer>
+    </section>
+
+
+    <section class="slide hero" data-slide>
+      <div class="hero-bg" aria-hidden="true">
+        <img src="assets/hero-cac-cursor.jpg" alt="" />
+      </div>
+      <div class="slide-content">
+        <p class="hero-brand reveal">
+          <span>Thank you</span>
+          Centre for Advanced Computing
+        </p>
+        <h1 class="reveal">Go build carefully</h1>
+        <p class="lede reveal">You now have a path from laptop exploration to CAC-ready SLURM drafts, with Projects, modes, skills, and MCP as practical vocabulary rather than buzzwords.</p>
+        <p class="author-line reveal">Shadi Khalifa, PhD &lt;khalifa.s@queensu.ca&gt;<br />Centre for Advanced Computing, Queen's University</p>
+        <div class="meta-row reveal">
+          <span>cac.queensu.ca</span>
+          <span>khalifa.s@queensu.ca</span>
+        </div>
+      </div>
+      <footer class="slide-footer"><span class="num"></span><span class="footer-author">Shadi Khalifa, PhD - cac.queensu.ca</span></footer>
+    </section>
+
+  </main>
+
+  <script>
+    (function () {
+      const slides = Array.from(document.querySelectorAll("main [data-slide]"));
+      const progress = document.getElementById("progress");
+      const total = slides.length;
+      let current = 0;
+      let wheelLock = false;
+
+      slides.forEach((slide, i) => {
+        const num = slide.querySelector(".num");
+        if (num) num.textContent = (i + 1) + " / " + total;
+      });
+
+      function setProgress(index) {
+        const pct = total <= 1 ? 100 : (index / (total - 1)) * 100;
+        progress.style.width = pct + "%";
+      }
+
+      function goTo(index) {
+        current = Math.max(0, Math.min(total - 1, index));
+        slides[current].scrollIntoView({ behavior: "smooth", block: "start" });
+        setProgress(current);
+      }
+
+      function nearestIndex() {
+        const mid = window.scrollY + window.innerHeight / 2;
+        let best = 0;
+        let bestDist = Infinity;
+        slides.forEach((slide, i) => {
+          const top = slide.offsetTop;
+          const center = top + slide.offsetHeight / 2;
+          const dist = Math.abs(center - mid);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = i;
+          }
+        });
+        return best;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("in-view");
+              current = slides.indexOf(entry.target);
+              setProgress(current);
+            }
+          });
+        },
+        { threshold: 0.55 }
+      );
+      slides.forEach((s) => observer.observe(s));
+
+      document.addEventListener("keydown", (e) => {
+        const tag = (e.target && e.target.tagName) || "";
+        if (tag === "INPUT" || tag === "TEXTAREA" || e.target.isContentEditable) return;
+
+        switch (e.key) {
+          case "ArrowDown":
+          case "ArrowRight":
+          case "PageDown":
+          case " ":
+            e.preventDefault();
+            goTo(nearestIndex() + 1);
+            break;
+          case "ArrowUp":
+          case "ArrowLeft":
+          case "PageUp":
+            e.preventDefault();
+            goTo(nearestIndex() - 1);
+            break;
+          case "Home":
+            e.preventDefault();
+            goTo(0);
+            break;
+          case "End":
+            e.preventDefault();
+            goTo(total - 1);
+            break;
+          default:
+            break;
+        }
+      });
+
+      window.addEventListener(
+        "wheel",
+        (e) => {
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+          if (Math.abs(e.deltaY) < 20) return;
+          if (wheelLock) {
+            e.preventDefault();
+            return;
+          }
+          e.preventDefault();
+          wheelLock = true;
+          goTo(nearestIndex() + (e.deltaY > 0 ? 1 : -1));
+          setTimeout(() => {
+            wheelLock = false;
+          }, 650);
+        },
+        { passive: false }
+      );
+
+      let touchY = null;
+      window.addEventListener(
+        "touchstart",
+        (e) => {
+          touchY = e.changedTouches[0].clientY;
+        },
+        { passive: true }
+      );
+      window.addEventListener(
+        "touchend",
+        (e) => {
+          if (touchY === null) return;
+          const dy = e.changedTouches[0].clientY - touchY;
+          touchY = null;
+          if (Math.abs(dy) < 50) return;
+          goTo(nearestIndex() + (dy < 0 ? 1 : -1));
+        },
+        { passive: true }
+      );
+
+      setProgress(0);
+      if (slides[0]) slides[0].classList.add("in-view");
+    })();
+  </script>
+</body>
+</html>

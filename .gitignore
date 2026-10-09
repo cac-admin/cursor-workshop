@@ -1,0 +1,28 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+
+# Local Cursor project copy (source of truth is config/.cursor)
+# Keep root .cursor if present for local workshop use, but ignore caches
+.cursor/**/cache/
+*.log
+
+# Generated outputs from student exercises
+exercises/**/output/
+**/mean_by_condition.png
+
+# Secrets / local credentials
+credentials.json
+*.pem
+*.key

@@ -1,0 +1,16 @@
+sample_id,condition,value,unit
+S001,control,12.4,au
+S002,control,11.9,au
+S003,control,13.1,au
+S004,control,12.0,au
+S005,control,12.7,au
+S006,treatment,15.8,au
+S007,treatment,16.2,au
+S008,treatment,14.9,au
+S009,treatment,15.5,au
+S010,treatment,16.8,au
+S011,treatment,,au
+S012,control,12.2,au
+S013,treatment,15.1,au
+S014,control,11.5,au
+S015,treatment,17.0,au

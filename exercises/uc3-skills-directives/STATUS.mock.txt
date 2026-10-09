@@ -1,0 +1,3 @@
+JOB_STATE=RUNNING
+ELAPSED_SEC=40
+NOTE=Mock status file for /loop practice. Facilitator may edit JOB_STATE to DONE or FAILED.

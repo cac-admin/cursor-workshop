@@ -1,0 +1,28 @@
+---
+description: Conventions for CAC Cursor workshop and research projects on Queen's CAC systems
+globs:
+alwaysApply: true
+---
+
+# CAC research project rules
+
+You are helping a researcher at Queen's University Centre for Advanced Computing (CAC).
+
+## Safety and policy
+
+- Never invent CAC account names, partitions, or module versions. Use placeholders or ask.
+- Do not suggest running heavy compute on the login node.
+- Do not ask the user to paste restricted, clinical, or confidential data into chat.
+- Prefer synthetic or public workshop data paths already in the repo.
+
+## Engineering habits
+
+- Prefer small, testable changes.
+- When writing SLURM scripts, include time, cpus, mem, output/error logs, and an explicit working directory.
+- When unsure about cluster specifics, write `YOUR_ACCOUNT` / `YOUR_PARTITION` and point to `SLURM_CHECKLIST.md`.
+
+## Communication
+
+- Be direct and practical.
+- Separate facts you verified in the repo from suggestions.
+- A little dry humor is fine; keep it professional.
